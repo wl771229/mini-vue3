@@ -9,7 +9,6 @@ class ReactiveEffect {
         this._fn()
     }
 }
-
 let activeEffect
 export function effect(fn){
 
@@ -18,27 +17,32 @@ export function effect(fn){
   _effect.run()
 
 }
-
 const targetMap = new Map()
 export function track(target,key){
-
     let depsMap = targetMap.get(target)
-
     if(!depsMap){
         depsMap = new Map();
         targetMap.set(target,depsMap)
     }
-
     let dep = depsMap.get(key)
     if(!dep){
         dep = new Set();
+        depsMap.set(key,dep)
     }
 
-    dep.push(activeEffect)
+    dep.add(activeEffect)
 
+}
 
+export function trigger(target,key){
 
+    let depMap = targetMap.get(target)
 
+    let dep = depMap.get(key)
+    for(const effect of dep){
+        effect.run()
+    }
 
 
 }
+
