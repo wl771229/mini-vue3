@@ -18,4 +18,22 @@ describe("effect", ()=>{
     expect(user.age).toBe(12)
 
 	})
+
+    it('effect fun',()=>{
+        // effect->function(runner)->fn->retutn fun
+        // 当我们调用effect 的时候，实际上会执行 runner 函数   ， 调用runner 函数 实际上会拿到 fn ，这是时候我们是把fn return 出去的
+        let foo = 10
+        const runner  =  effect(()=>{
+            foo++;
+            return 'foo';
+        })
+         expect(foo).toBe(11)
+         const r = runner()
+         expect(foo).toBe(12)
+         expect(r).toBe('foo')
+
+    })
+
+
+
 })

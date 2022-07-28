@@ -6,16 +6,16 @@ class ReactiveEffect {
     }
     run(){
         activeEffect =  this
-        this._fn()
+        return this._fn()
     }
 }
 let activeEffect
 export function effect(fn){
 
 // 需要执行这个fn
-  const _effect =   new ReactiveEffect(fn)
+  const _effect = new ReactiveEffect(fn)
   _effect.run()
-
+  return _effect.run.bind(_effect)
 }
 const targetMap = new Map()
 export function track(target,key){
@@ -29,9 +29,7 @@ export function track(target,key){
         dep = new Set();
         depsMap.set(key,dep)
     }
-
     dep.add(activeEffect)
-
 }
 
 export function trigger(target,key){
@@ -41,6 +39,7 @@ export function trigger(target,key){
     let dep = depMap.get(key)
     for(const effect of dep){
         effect.run()
+
     }
 
 
