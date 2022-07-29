@@ -10,11 +10,4 @@ it('happy path', ()=>{
     expect(original).not.toBe(observable)
     expect(observable.foo).toBe(1)
 })
-
-
-
-
-
-
-
 })
