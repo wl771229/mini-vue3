@@ -1,4 +1,4 @@
-import { effect } from '../effect';
+import { effect,stop } from '../effect';
 import {reactive} from '../reactive'
 
 describe("effect", ()=>{
@@ -8,6 +8,9 @@ describe("effect", ()=>{
         age:10
     })  
     let nextAge;
+    // 当触发effect 函数是 ，会触发字段的读取操作  ， 
+    // 当修改字段的值， 会触发字段的设置操作
+    // 也就是说会触发 new proxy 的 get 和set 操作
     effect(()=>{
         // 收集，当调用effect 时收集依赖 ， 收集到一个桶里面去
         nextAge = user.age++
@@ -46,7 +49,7 @@ describe("effect", ()=>{
         const scheduler = jest.fn(() => {
           run = runner;
         });
-        const obj = reactive({ foo: 1 });
+        const obj = reactive({ foo: 1,ok:true });
         const runner = effect(
           () => {
             dummy = obj.foo;
@@ -65,6 +68,25 @@ describe("effect", ()=>{
         // // should have run
         expect(dummy).toBe(2);
       });
+
+      
+    it("stop", () => {
+      let dummy;
+      const obj = reactive({prop:1});
+      const runner = effect(()=>{
+        dummy = obj.prop
+      })
+      obj.prop = 2;
+      expect(dummy).toBe(2);
+      stop(runner);
+      obj.prop = 3
+      expect(dummy).toBe(2);
+
+
+      runner();
+      expect(dummy).toBe(3);
+
+    });
   
 
 })
